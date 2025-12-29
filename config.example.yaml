@@ -1,0 +1,54 @@
+# Proxmox VE Backup by Tag - Configuration File Example
+# Copy this file to config.yaml and adjust settings as needed
+
+# Proxmox connection settings
+host: "https://proxmox.local:8006"
+user: "root@pam"
+password: "your-password-here"
+verify_ssl: false
+
+# Backup storage
+# Storage name must exist in Proxmox
+storage: "backup_storage"
+
+# Tags to include (VMs/containers must have at least one of these tags)
+# Leave empty or comment out to include all VMs/containers
+tags:
+  - "production"
+  - "important"
+
+# Tags to exclude (VMs/containers with any of these tags will be excluded)
+# Leave empty or comment out to not exclude any
+exclude_tags:
+  - "maintenance"
+  - "temporary"
+
+# Backup order: 'vmid' or 'size'
+# 'vmid' - order by VM ID (default)
+# 'size' - order by disk size (smallest first)
+order: "vmid"
+
+# Backup mode: 'snapshot', 'suspend', or 'stop'
+# 'snapshot' - uses a snapshot for running VMs (fastest, requires guest agent for consistency)
+# 'suspend' - suspends the VM during backup
+# 'stop' - stops the VM during backup
+mode: "snapshot"
+
+# Compression algorithm: '0', 'gzip', 'lzo', or 'zstd'
+# '0' - no compression
+# 'gzip' - good compression, moderate speed
+# 'lzo' - fast compression, lower ratio
+# 'zstd' - best balance of compression and speed (default, recommended)
+compress: "zstd"
+
+# Cluster operation mode: 'centralized' or 'distributed'
+# 'centralized' - process one backup at a time across the entire cluster
+# 'distributed' - allow concurrent backups on different nodes
+cluster_mode: "centralized"
+
+# Logging settings
+log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+log_file: "/var/log/pve-backup-by-tag.log"
+
+# Additional options
+# dry_run: true  # Set to true to perform a dry run without creating backups
