@@ -174,10 +174,13 @@ class BackupManager:
             config = self.api.get_vm_config(node, vm_type, vmid)
             tags = config.get('tags', '')
             
-            if not tags and not include_tags:
-                # If no include tags specified, include all
-                if not exclude_tags:
-                    filtered.append(resource)
+            if not tags:
+                # VM has no tags
+                if not include_tags:
+                    # No include filter, so include if not excluded
+                    if not exclude_tags:
+                        filtered.append(resource)
+                # If include_tags is specified, exclude VMs without tags
                 continue
             
             # Parse tags
@@ -209,7 +212,8 @@ class BackupManager:
             maxdisk = resource.get('maxdisk', 0)
             # Use maxdisk if available, otherwise disk
             return maxdisk if maxdisk > 0 else disk_size
-        except:
+        except (TypeError, KeyError, AttributeError) as e:
+            self.logger.debug(f"Error getting disk size: {e}")
             return 0
     
     def order_resources(self, resources: List[Dict], order_by: str = 'vmid') -> List[Dict]:

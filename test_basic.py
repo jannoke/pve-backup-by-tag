@@ -17,7 +17,6 @@ try:
     # We can't directly import because it will try to run main()
     # Instead, we'll test the CLI argument parsing
     import subprocess
-    import json
     
     print("✓ Module import successful")
 except Exception as e:
